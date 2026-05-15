@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acciones Formativas 2026 · Bibliotecas Duoc UC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --dark:#111;--dark2:#1a1a1a;--dark3:#232323;--dark4:#2a2a2a;
+    --gold:#F5A800;--teal:#1EBEC8;--blue:#2E86C1;--green:#27AE60;--red:#E74C3C;--purple:#8E44AD;
+    --text:#fff;--text2:#aaa;--text3:#666;
+    --border:rgba(255,255,255,0.07);
+    --card:#1e1e1e;
+    --ind-color:#F5A800;
+    --tall-color:#1EBEC8;
+    --ases-color:#27AE60;
+    --char-color:#8E44AD;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Barlow','Helvetica Neue',Arial,sans-serif;
+    background:var(--dark);color:var(--text);min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::-webkit-scrollbar{width:4px;height:4px}
+  ::-webkit-scrollbar-track{background:#111}
+  ::-webkit-scrollbar-thumb{background:#333;border-radius:2px}
+
+  /* ── NAV ── */
+  .navbar{
+    background:var(--dark2);height:52px;display:flex;align-items:center;
+    padding:0 24px;position:sticky;top:0;z-index:900;
+    border-bottom:1px solid var(--border);
+  }
+  .nav-logo{font-family:'Barlow Condensed',sans-serif;font-size:20px;display:flex;align-items:center;gap:0;margin-right:16px}
+  .nav-logo span:first-child{font-weight:400;color:#fff}
+  .nav-logo span:last-child{font-weight:900;color:#fff}
+  .nav-sep{width:1px;height:24px;background:var(--border);margin:0 16px}
+  .nav-title{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.2px;text-transform:uppercase}
+  .nav-year{margin-left:auto;background:var(--gold);color:#111;font-size:11px;font-weight:900;padding:3px 12px;border-radius:2px}
+
+  /* ── YEAR BAR ── */
+  .year-bar{
+    background:#141414;display:flex;align-items:center;padding:0 24px;
+    border-bottom:2px solid rgba(245,168,0,0.15);position:sticky;top:52px;z-index:800;
+    gap:4px;height:38px;
+  }
+  .year-bar span{font-size:10px;font-weight:700;color:#3a3a3a;letter-spacing:.8px;text-transform:uppercase;margin-right:10px;flex-shrink:0}
+  .year-btn{
+    background:none;border:none;cursor:pointer;padding:0 16px;height:38px;
+    font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;color:#555;
+    border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;flex-shrink:0;
+  }
+  .year-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+  .year-btn:hover{color:#aaa}
+
+  /* ── SEDE BAR ── */
+  .sede-bar{
+    background:#0e0e0e;padding:0 24px;display:flex;align-items:center;gap:6px;
+    border-bottom:1px solid var(--border);overflow-x:auto;height:40px;
+  }
+  .sede-btn{
+    background:none;border:1px solid transparent;cursor:pointer;padding:3px 12px;border-radius:2px;
+    font-family:'Barlow',sans-serif;font-size:10px;font-weight:700;color:#555;
+    transition:all .15s;flex-shrink:0;letter-spacing:.3px;text-transform:uppercase;
+  }
+  .sede-btn.active{background:rgba(245,168,0,.1);border-color:var(--gold);color:var(--gold)}
+  .sede-btn:hover{color:#ccc;border-color:#444}
+
+  /* ── FILTERS ── */
+  .filters-bar{
+    background:#181818;padding:10px 24px;display:flex;align-items:center;gap:12px;
+    border-bottom:1px solid var(--border);flex-wrap:wrap;
+  }
+  .filter-label{font-size:10px;font-weight:700;color:#3a3a3a;letter-spacing:.8px;text-transform:uppercase;flex-shrink:0}
+  .filter-select{
+    background:#242424;border:1px solid #333;color:#aaa;padding:5px 10px;border-radius:2px;
+    font-family:'Barlow',sans-serif;font-size:11px;cursor:pointer;outline:none;
+    transition:border-color .15s;max-width:260px;
+  }
+  .filter-select:focus{border-color:var(--gold);color:#fff}
+  .filter-chip{
+    padding:4px 10px;border-radius:2px;font-size:10px;font-weight:700;cursor:pointer;
+    border:1px solid;transition:all .15s;flex-shrink:0;
+  }
+  .filter-chip.all{border-color:var(--gold);color:var(--gold);background:rgba(245,168,0,.08)}
+  .filter-chip.INDUCCION{border-color:var(--ind-color);color:var(--ind-color);background:transparent}
+  .filter-chip.INDUCCION.active{background:rgba(245,168,0,.12)}
+  .filter-chip.TALLER{border-color:var(--tall-color);color:var(--tall-color);background:transparent}
+  .filter-chip.TALLER.active{background:rgba(30,190,200,.12)}
+  .filter-chip.ASESORIA{border-color:var(--ases-color);color:var(--ases-color);background:transparent}
+  .filter-chip.ASESORIA.active{background:rgba(39,174,96,.12)}
+  .filter-chip.CHARLA{border-color:var(--char-color);color:var(--char-color);background:transparent}
+  .filter-chip.CHARLA.active{background:rgba(142,68,173,.12)}
+  .filter-reset{margin-left:auto;background:none;border:1px solid #333;color:#555;padding:4px 12px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:10px;border-radius:2px;font-weight:600;transition:all .15s}
+  .filter-reset:hover{border-color:#666;color:#aaa}
+
+  /* ── PAGE ── */
+  .page{max-width:1400px;margin:0 auto;padding:24px}
+
+  /* ── KPI BOXES ── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+  .kpi-card{
+    background:var(--card);border:1px solid var(--border);border-top:3px solid;
+    padding:18px 20px;position:relative;overflow:hidden;
+  }
+  .kpi-card::after{
+    content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;
+    border-radius:50%;opacity:.06;
+  }
+  .kpi-card.ind{border-top-color:var(--ind-color)}
+  .kpi-card.ind::after{background:var(--ind-color)}
+  .kpi-card.tall{border-top-color:var(--tall-color)}
+  .kpi-card.tall::after{background:var(--tall-color)}
+  .kpi-card.ases{border-top-color:var(--ases-color)}
+  .kpi-card.ases::after{background:var(--ases-color)}
+  .kpi-card.char{border-top-color:var(--char-color)}
+  .kpi-card.char::after{background:var(--char-color)}
+  .kpi-icon{font-size:20px;margin-bottom:8px;display:block}
+  .kpi-label{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .kpi-value{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;line-height:1}
+  .kpi-card.ind .kpi-value{color:var(--ind-color)}
+  .kpi-card.tall .kpi-value{color:var(--tall-color)}
+  .kpi-card.ases .kpi-value{color:var(--ases-color)}
+  .kpi-card.char .kpi-value{color:var(--char-color)}
+  .kpi-sub{font-size:11px;color:var(--text3);margin-top:6px}
+  .kpi-pct{font-size:12px;font-weight:700;margin-top:4px;opacity:.7}
+
+  /* ── CHART GRID ── */
+  .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .chart-grid.three{grid-template-columns:1fr 1fr 1fr}
+  .chart-grid.full{grid-template-columns:1fr}
+  @media(max-width:900px){.chart-grid,.chart-grid.three{grid-template-columns:1fr}}
+
+  .chart-card{
+    background:var(--card);border:1px solid var(--border);padding:18px 20px;
+  }
+  .chart-title{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+  .chart-sub{font-size:11px;color:#444;margin-bottom:16px}
+  .chart-wrap{position:relative}
+
+  /* ── HORIZONTAL BAR LIST ── */
+  .bar-list{display:flex;flex-direction:column;gap:7px}
+  .bar-item{display:flex;align-items:center;gap:8px}
+  .bar-lbl{font-size:11px;color:var(--text2);flex-shrink:0;width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:uppercase;letter-spacing:.2px}
+  .bar-track{flex:1;height:14px;background:#222;border-radius:1px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:1px;transition:width .4s ease}
+  .bar-val{font-size:11px;font-weight:700;color:var(--text2);flex-shrink:0;width:48px;text-align:right}
+  .bar-lbl.short{width:120px}
+
+  /* ── MONTH TABLE ── */
+  .month-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+  .month-card{background:var(--card);border:1px solid var(--border);padding:14px 16px;text-align:center}
+  .month-name{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+  .month-total{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--gold);line-height:1}
+  .month-chips{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px}
+  .m-chip{font-size:9px;font-weight:700;padding:2px 6px;border-radius:1px;letter-spacing:.3px}
+
+  /* ── ACTIVITY DETAIL TABLE ── */
+  .act-table{width:100%;border-collapse:collapse;font-size:11px}
+  .act-table th{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid var(--border);text-align:left}
+  .act-table td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--text2)}
+  .act-table tr:last-child td{border-bottom:none}
+  .act-table tr:hover td{background:rgba(255,255,255,.02)}
+  .act-badge{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;border-radius:1px;letter-spacing:.4px;text-transform:uppercase}
+  .badge-INDUCCION{background:rgba(245,168,0,.15);color:var(--ind-color)}
+  .badge-TALLER{background:rgba(30,190,200,.15);color:var(--tall-color)}
+  .badge-ASESORIA{background:rgba(39,174,96,.15);color:var(--ases-color)}
+  .badge-CHARLA{background:rgba(142,68,173,.15);color:var(--char-color)}
+
+  /* ── SECTION TITLE ── */
+  .section-title{font-size:10px;font-weight:700;color:#3a3a3a;letter-spacing:1.2px;text-transform:uppercase;margin:24px 0 10px;display:flex;align-items:center;gap:10px}
+  .section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* ── TIPO USUARIO PILLS ── */
+  .tipo-row{display:flex;gap:12px;margin-bottom:16px}
+  .tipo-pill{background:var(--card);border:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px;flex:1}
+  .tipo-pill .icon{font-size:22px}
+  .tipo-pill .info{}
+  .tipo-pill .info .lbl{font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+  .tipo-pill .info .val{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--gold)}
+
+  /* ── EMPTY ── */
+  .empty{padding:40px;text-align:center;color:var(--text3);font-size:13px}
+
+  /* ── TOOLTIP ── */
+  .no-data{color:#333;font-size:11px;padding:20px 0;text-align:center}
+  
+  /* scrollbar hide for sede bar */
+  .sede-bar::-webkit-scrollbar{height:2px}
+  .filters-bar select option{background:#1a1a1a}
+
+  /* ── 2025 overlay ── */
+  .year-overlay{display:none;padding:60px 24px;text-align:center}
+  .year-overlay.active{display:block}
+  .year-overlay-icon{font-size:48px;margin-bottom:16px}
+  .year-overlay-title{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:#333;margin-bottom:8px}
+  .year-overlay-sub{font-size:13px;color:#333}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-logo"><span>Duoc</span><span>UC</span></div>
+  <div class="nav-sep"></div>
+  <div class="nav-title">Acciones Formativas · Bibliotecas</div>
+  <div class="nav-year" id="navYear">2026</div>
+</nav>
+
+<!-- YEAR BAR -->
+<div class="year-bar">
+  <span>PERÍODO:</span>
+  <button class="year-btn" onclick="selectYear('2025')">2025</button>
+  <button class="year-btn active" onclick="selectYear('2026')">2026</button>
+</div>
+
+<!-- 2025 NO DATA -->
+<div class="year-overlay" id="overlay2025">
+  <div class="year-overlay-icon">📋</div>
+  <div class="year-overlay-title">Datos 2025 en proceso</div>
+  <div class="year-overlay-sub">Los indicadores del año 2025 serán cargados próximamente.</div>
+</div>
+
+<!-- MAIN CONTENT 2026 -->
+<div id="content2026">
+
+  <!-- SEDE BAR -->
+  <div class="sede-bar" id="sedeBar"></div>
+
+  <!-- FILTERS -->
+  <div class="filters-bar">
+    <span class="filter-label">Actividad:</span>
+    <button class="filter-chip all active" id="chip-all" onclick="toggleAct('all')">Todas</button>
+    <button class="filter-chip INDUCCION" id="chip-INDUCCION" onclick="toggleAct('INDUCCION')">Inducción</button>
+    <button class="filter-chip TALLER" id="chip-TALLER" onclick="toggleAct('TALLER')">Taller</button>
+    <button class="filter-chip ASESORIA" id="chip-ASESORIA" onclick="toggleAct('ASESORIA')">Asesoría</button>
+    <button class="filter-chip CHARLA" id="chip-CHARLA" onclick="toggleAct('CHARLA')">Charla</button>
+    <span class="filter-label" style="margin-left:12px">Escuela:</span>
+    <select class="filter-select" id="selEscuela" onchange="applyFilters()">
+      <option value="">Todas las escuelas</option>
+    </select>
+    <select class="filter-select" id="selCarrera" onchange="applyFilters()">
+      <option value="">Todas las carreras</option>
+    </select>
+    <button class="filter-reset" onclick="resetFilters()">↺ Limpiar filtros</button>
+  </div>
+
+  <!-- PAGE -->
+  <div class="page" id="mainPage">
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card ind">
+        <span class="kpi-icon">🎓</span>
+        <div class="kpi-label">Inducciones</div>
+        <div class="kpi-value" id="kpi-ind">—</div>
+        <div class="kpi-sub" id="kpi-ind-sub"></div>
+        <div class="kpi-pct" style="color:var(--ind-color)" id="kpi-ind-pct"></div>
+      </div>
+      <div class="kpi-card tall">
+        <span class="kpi-icon">🛠</span>
+        <div class="kpi-label">Talleres</div>
+        <div class="kpi-value" id="kpi-tall">—</div>
+        <div class="kpi-sub" id="kpi-tall-sub"></div>
+        <div class="kpi-pct" style="color:var(--tall-color)" id="kpi-tall-pct"></div>
+      </div>
+      <div class="kpi-card ases">
+        <span class="kpi-icon">💬</span>
+        <div class="kpi-label">Asesorías</div>
+        <div class="kpi-value" id="kpi-ases">—</div>
+        <div class="kpi-sub" id="kpi-ases-sub"></div>
+        <div class="kpi-pct" style="color:var(--ases-color)" id="kpi-ases-pct"></div>
+      </div>
+      <div class="kpi-card char">
+        <span class="kpi-icon">📢</span>
+        <div class="kpi-label">Charlas</div>
+        <div class="kpi-value" id="kpi-char">—</div>
+        <div class="kpi-sub" id="kpi-char-sub"></div>
+        <div class="kpi-pct" style="color:var(--char-color)" id="kpi-char-pct"></div>
+      </div>
+    </div>
+
+    <!-- TIPO USUARIO -->
+    <div class="tipo-row" id="tipoRow">
+      <div class="tipo-pill"><div class="icon">👩‍🎓</div><div class="info"><div class="lbl">Estudiantes</div><div class="val" id="tipo-est">—</div></div></div>
+      <div class="tipo-pill"><div class="icon">👨‍🏫</div><div class="info"><div class="lbl">Docentes</div><div class="val" id="tipo-doc" style="color:var(--teal)">—</div></div></div>
+    </div>
+
+    <!-- MONTHLY -->
+    <div class="section-title">Distribución Mensual · Ene–Abr 2026</div>
+    <div class="month-grid" id="monthGrid"></div>
+
+    <!-- CHARTS ROW 1 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">Evolución Mensual</div>
+        <div class="chart-sub">Total participantes por mes y tipo de actividad</div>
+        <div class="chart-wrap"><canvas id="chartLine" height="200"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Distribución por Actividad</div>
+        <div class="chart-sub">Proporción del total de acciones formativas</div>
+        <div class="chart-wrap" style="height:200px;display:flex;align-items:center;justify-content:center"><canvas id="chartDona" style="max-height:200px"></canvas></div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW 2 -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">Por Escuela</div>
+        <div class="chart-sub">Total de participantes agrupados por escuela</div>
+        <div class="chart-wrap"><canvas id="chartEscuela" height="220"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Top 10 Carreras</div>
+        <div class="chart-sub">Carreras con mayor participación</div>
+        <div id="barCarrera" class="bar-list" style="min-height:220px"></div>
+      </div>
+    </div>
+
+    <!-- SEDE COMPARISON (global only) -->
+    <div id="sedeCompSection">
+      <div class="section-title" id="sedeCompTitle">Comparativo por Sede</div>
+      <div class="chart-card" style="margin-bottom:16px">
+        <div class="chart-title">Participantes por Sede</div>
+        <div class="chart-sub">Total acumulado Ene–Abr 2026</div>
+        <div class="chart-wrap"><canvas id="chartSede" height="220"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY TABLE -->
+    <div class="section-title">Actividades Realizadas</div>
+    <div class="chart-card">
+      <div class="chart-title">Detalle de Actividades</div>
+      <div class="chart-sub" id="actTableSub"></div>
+      <div style="overflow-x:auto;margin-top:8px">
+        <table class="act-table" id="actTable">
+          <thead>
+            <tr>
+              <th>Actividad</th>
+              <th>Tipo</th>
+              <th style="text-align:right">Participantes</th>
+              <th style="text-align:right">% del total</th>
+            </tr>
+          </thead>
+          <tbody id="actTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+</div><!-- /content2026 -->
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const DATA = {"Alameda": {"total": 619, "by_actividad": {"TALLER": 472, "INDUCCION": 146, "ASESORIA": 1}, "by_tipo_usuario": {"ESTUDIANTE": 619}, "monthly": {"Enero": {"total": 18, "by_actividad": {"TALLER": 18}, "by_formato": {"EN LINEA": 18}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 142, "by_actividad": {"INDUCCION": 142}, "by_formato": {"PRESENCIAL": 142}}, "Abril": {"total": 459, "by_actividad": {"TALLER": 454, "INDUCCION": 4, "ASESORIA": 1}, "by_formato": {"PRESENCIAL": 429, "EN LINEA": 30}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 207, "by_act": {"ASESORIA": 1, "INDUCCION": 35, "TALLER": 171}}, "CONSTRUCCION": {"total": 311, "by_act": {"INDUCCION": 90, "TALLER": 221}}, "DISENO": {"total": 1, "by_act": {"TALLER": 1}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 94, "by_act": {"INDUCCION": 21, "TALLER": 73}}, "No Aplica": {"total": 6, "by_act": {"TALLER": 6}}}, "by_carrera": {"INGENIERIA EN CONSTRUCCION": 103, "INGENIERIA EN INFORMATICA": 94, "INGENIERIA EN PREVENCION DE RIESGOS": 93, "INGENIERIA EN COMERCIO EXTERIOR": 61, "INGENIERIA EN GESTION LOGISTICA": 49, "TECNICO TOPOGRAFO GEOMATICO": 39, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 35, "INGENIERIA EN MARKETING DIGITAL": 33, "DIBUJO Y MODELAMIENTO ARQUITECTONICO Y ESTRUCTURAL": 30, "AUDITORIA": 27, "RESTAURACION DE BIENES PATRIMONIALES": 21, "TECNICO EN CONSTRUCCION": 20, "No Aplica": 6, "TECNICO EN PREVENCION DE RIESGOS": 3, "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 2}, "by_nombre": [{"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 435}, {"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 146}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 21}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 13}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 3}, {"nombre": "ASESORIA ACADEMICA", "tipo": "ASESORIA", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "CONSTRUCCION", "DISENO", "INFORMATICA Y TELECOMUNICACIONES", "No Aplica"], "carreras": ["AUDITORIA", "DIBUJO Y MODELAMIENTO ARQUITECTONICO Y ESTRUCTURAL", "DISENO DE AMBIENTES", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN COMERCIO EXTERIOR", "INGENIERIA EN CONSTRUCCION", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN PREVENCION DE RIESGOS", "No Aplica", "RESTAURACION DE BIENES PATRIMONIALES", "TECNICO EN CONSTRUCCION", "TECNICO EN PREVENCION DE RIESGOS", "TECNICO TOPOGRAFO", "TECNICO TOPOGRAFO GEOMATICO"]}, "Antonio Varas": {"total": 2281, "by_actividad": {"TALLER": 1249, "INDUCCION": 1032}, "by_tipo_usuario": {"ESTUDIANTE": 2281}, "monthly": {"Enero": {"total": 29, "by_actividad": {"TALLER": 29}, "by_formato": {"EN LINEA": 29}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 1031, "by_actividad": {"INDUCCION": 1031}, "by_formato": {"PRESENCIAL": 1031}}, "Abril": {"total": 1221, "by_actividad": {"TALLER": 1220, "INDUCCION": 1}, "by_formato": {"PRESENCIAL": 1151, "EN LINEA": 70}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 991, "by_act": {"INDUCCION": 503, "TALLER": 488}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 589, "by_act": {"INDUCCION": 258, "TALLER": 331}}, "No Aplica": {"total": 10, "by_act": {"TALLER": 10}}, "RECURSOS NATURALES": {"total": 2, "by_act": {"TALLER": 2}}, "SALUD": {"total": 2, "by_act": {"TALLER": 2}}, "Sin Escuela": {"total": 3, "by_act": {"TALLER": 3}}, "TURISMO": {"total": 684, "by_act": {"INDUCCION": 271, "TALLER": 413}}}, "by_carrera": {"ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION": 479, "INGENIERIA EN INFORMATICA": 445, "INGENIERIA EN COMERCIO EXTERIOR": 258, "GASTRONOMIA INTERNACIONAL": 199, "INGENIERIA EN GESTION LOGISTICA": 183, "INGENIERIA EN MARKETING DIGITAL": 175, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 127, "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO": 101, "INGENIERIA EN INFRAESTRUCTURA TECNOLOGICA": 96, "AUDITORIA": 87, "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 51, "INGENIERIA EN REDES Y TELECOMUNICACIONES": 46, "No Aplica": 12, "TECNICO EN ADMINISTRACION": 5, "Sin Carrera": 3}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 1032}, {"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "TALLER", "n": 598}, {"nombre": "BUSQUEDA DE INFORMACION CON HERRAMIENTAS IA", "tipo": "TALLER", "n": 551}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 57}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 23}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 16}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 3}, {"nombre": "EXPLORA + ALLA DEL LIBRO O'REILLY", "tipo": "TALLER", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "INFORMATICA Y TELECOMUNICACIONES", "No Aplica", "RECURSOS NATURALES", "SALUD", "Sin Escuela", "TURISMO"], "carreras": ["ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION", "ADMINISTRACION TURISTICA", "AUDITORIA", "COMERCIO EXTERIOR", "ECOTURISMO", "GASTRONOMIA INTERNACIONAL", "INGENIERIA AGRICOLA", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO", "INGENIERIA EN ADMINISTRACION MENCION MARKETING", "INGENIERIA EN COMERCIO EXTERIOR", "INGENIERIA EN CONECTIVIDAD Y REDES", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE", "INGENIERIA EN INFRAESTRUCTURA TECNOLOGICA", "INGENIERIA EN MARKETING", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN REDES Y TELECOMUNICACIONES", "No Aplica", "Sin Carrera", "TECNICO EN ADMINISTRACION", "TECNICO EN MARKETING", "TURISMO Y HOTELERIA"]}, "Campus Arauco": {"total": 5, "by_actividad": {"TALLER": 5}, "by_tipo_usuario": {"ESTUDIANTE": 5}, "monthly": {"Enero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Abril": {"total": 5, "by_actividad": {"TALLER": 5}, "by_formato": {"EN LINEA": 5}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 4, "by_act": {"TALLER": 4}}, "INGENIERIA": {"total": 1, "by_act": {"TALLER": 1}}}, "by_carrera": {"TECNICO EN ADMINISTRACION": 4, "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL DUAL": 1}, "by_nombre": [{"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 4}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "INGENIERIA"], "carreras": ["TECNICO EN ADMINISTRACION", "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL DUAL"]}, "Campus Nacimiento": {"total": 2, "by_actividad": {"TALLER": 2}, "by_tipo_usuario": {"ESTUDIANTE": 2}, "monthly": {"Enero": {"total": 2, "by_actividad": {"TALLER": 2}, "by_formato": {"EN LINEA": 2}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Abril": {"total": 0, "by_actividad": {}, "by_formato": {}}}, "by_escuela": {"No Aplica": {"total": 2, "by_act": {"TALLER": 2}}}, "by_carrera": {"No Aplica": 2}, "by_nombre": [{"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 2}], "escuelas": ["No Aplica"], "carreras": ["No Aplica"]}, "Campus Villarrica": {"total": 6, "by_actividad": {"TALLER": 6}, "by_tipo_usuario": {"ESTUDIANTE": 6}, "monthly": {"Enero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Abril": {"total": 6, "by_actividad": {"TALLER": 6}, "by_formato": {"EN LINEA": 6}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 2, "by_act": {"TALLER": 2}}, "No Aplica": {"total": 4, "by_act": {"TALLER": 4}}}, "by_carrera": {"No Aplica": 4, "TECNICO EN ADMINISTRACION": 2}, "by_nombre": [{"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 2}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 2}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 2}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "No Aplica"], "carreras": ["No Aplica", "TECNICO EN ADMINISTRACION"]}, "Campus Virtual": {"total": 28, "by_actividad": {"TALLER": 26, "ASESORIA": 1, "INDUCCION": 1}, "by_tipo_usuario": {"ESTUDIANTE": 28}, "monthly": {"Enero": {"total": 3, "by_actividad": {"TALLER": 3}, "by_formato": {"EN LINEA": 3}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Abril": {"total": 25, "by_actividad": {"TALLER": 23, "ASESORIA": 1, "INDUCCION": 1}, "by_formato": {"EN LINEA": 23, "PRESENCIAL": 2}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 13, "by_act": {"INDUCCION": 1, "TALLER": 12}}, "COMUNICACION": {"total": 1, "by_act": {"ASESORIA": 1}}, "CONSTRUCCION": {"total": 1, "by_act": {"TALLER": 1}}, "DISENO": {"total": 1, "by_act": {"TALLER": 1}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 6, "by_act": {"TALLER": 6}}, "INGENIERIA": {"total": 1, "by_act": {"TALLER": 1}}, "No Aplica": {"total": 5, "by_act": {"TALLER": 5}}}, "by_carrera": {"No Aplica": 5, "ADMINISTRACION DE EMPRESAS": 4, "ANALISTA PROGRAMADOR COMPUTACIONAL": 3, "INGENIERIA EN MARKETING DIGITAL": 3, "ADMINISTRACION PUBLICA": 2, "INGENIERIA EN DESARROLLO DE SOFTWARE": 2, "AUDITORIA Y ANALISIS DE NEGOCIOS": 1, "CONTABILIDAD TRIBUTARIA": 1, "DESARROLLO Y DISENO WEB": 1, "INGENIERIA EN CIENCIA DE DATOS": 1, "INGENIERIA EN GESTION DE PERSONAS": 1, "RELACIONES PUBLICAS Y COMUNICACION ORGANIZACIONAL": 1, "TECNICO EN CONTROL Y MONITOREO REMOTO DE PROCESOS MINEROS": 1, "TECNICO EN OPERACIONES LOGISTICAS": 1, "TECNICO EN PREVENCION DE RIESGOS LABORALES": 1}, "by_nombre": [{"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 19}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 4}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 3}, {"nombre": "ASESORIA ACADEMICA", "tipo": "ASESORIA", "n": 1}, {"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "COMUNICACION", "CONSTRUCCION", "DISENO", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica"], "carreras": ["ADMINISTRACION DE EMPRESAS", "ADMINISTRACION PUBLICA", "ANALISTA PROGRAMADOR COMPUTACIONAL", "AUDITORIA Y ANALISIS DE NEGOCIOS", "CONTABILIDAD TRIBUTARIA", "DESARROLLO Y DISENO WEB", "INGENIERIA EN CIENCIA DE DATOS", "INGENIERIA EN DESARROLLO DE SOFTWARE", "INGENIERIA EN GESTION DE PERSONAS", "INGENIERIA EN MARKETING DIGITAL", "No Aplica", "RELACIONES PUBLICAS Y COMUNICACION ORGANIZACIONAL", "TECNICO EN CONTROL Y MONITOREO REMOTO DE PROCESOS MINEROS", "TECNICO EN OPERACIONES LOGISTICAS", "TECNICO EN PREVENCION DE RIESGOS LABORALES"]}, "Casa Central": {"total": 2, "by_actividad": {"TALLER": 2}, "by_tipo_usuario": {"ESTUDIANTE": 2}, "monthly": {"Enero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Abril": {"total": 2, "by_actividad": {"TALLER": 2}, "by_formato": {"EN LINEA": 2}}}, "by_escuela": {"No Aplica": {"total": 2, "by_act": {"TALLER": 2}}}, "by_carrera": {"No Aplica": 2}, "by_nombre": [{"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 2}], "escuelas": ["No Aplica"], "carreras": ["No Aplica"]}, "Maip\u00fa": {"total": 1131, "by_actividad": {"INDUCCION": 1064, "TALLER": 67}, "by_tipo_usuario": {"ESTUDIANTE": 1131}, "monthly": {"Enero": {"total": 26, "by_actividad": {"TALLER": 26}, "by_formato": {"EN LINEA": 26}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Abril": {"total": 1105, "by_actividad": {"INDUCCION": 1064, "TALLER": 41}, "by_formato": {"PRESENCIAL": 1066, "EN LINEA": 39}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 255, "by_act": {"INDUCCION": 229, "TALLER": 26}}, "COMUNICACION": {"total": 33, "by_act": {"INDUCCION": 30, "TALLER": 3}}, "CONSTRUCCION": {"total": 74, "by_act": {"INDUCCION": 72, "TALLER": 2}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 266, "by_act": {"INDUCCION": 253, "TALLER": 13}}, "INGENIERIA": {"total": 164, "by_act": {"INDUCCION": 156, "TALLER": 8}}, "No Aplica": {"total": 8, "by_act": {"TALLER": 8}}, "RECURSOS NATURALES": {"total": 49, "by_act": {"INDUCCION": 49}}, "SALUD": {"total": 280, "by_act": {"INDUCCION": 273, "TALLER": 7}}, "Sin Escuela": {"total": 2, "by_act": {"INDUCCION": 2}}}, "by_carrera": {"INGENIERIA EN INFORMATICA": 156, "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 103, "TECNICO EN ODONTOLOGIA": 73, "PREPARADOR FISICO": 67, "TECNICO DE ENFERMERIA": 64, "INGENIERIA EN REDES Y TELECOMUNICACIONES": 63, "INGENIERIA EN GESTION LOGISTICA": 59, "TECNICO EN QUIMICA Y FARMACIA": 56, "INGENIERIA EN CONSTRUCCION": 49, "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 43, "ANALISTA PROGRAMADOR": 42, "AUDITORIA": 41, "INGENIERIA EN MARKETING DIGITAL": 32, "TECNICO EN MAQUINARIA Y VEHICULOS PESADOS": 31, "TECNICO VETERINARIO Y PECUARIO": 31}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 1064}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 24}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 21}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 17}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 3}, {"nombre": "BUSQUEDA DE INFORMACION CON HERRAMIENTAS IA", "tipo": "TALLER", "n": 1}, {"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "TALLER", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "COMUNICACION", "CONSTRUCCION", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica", "RECURSOS NATURALES", "SALUD", "Sin Escuela"], "carreras": ["ADMINISTRACION DE REDES Y TELECOMUNICACIONES", "ANALISTA PROGRAMADOR", "ANIMACION DIGITAL", "AUDITORIA", "CONTABILIDAD GENERAL MENCION LEGISLACION TRIBUTARIA", "INFORMATICA BIOMEDICA", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO", "INGENIERIA EN CONSTRUCCION", "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE", "INGENIERIA EN MANTENIMIENTO INDUSTRIAL", "INGENIERIA EN MAQUINARIA Y VEHICULOS PESADOS", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "INGENIERIA EN MEDIO AMBIENTE", "INGENIERIA EN PREVENCION DE RIESGOS", "INGENIERIA EN REDES Y TELECOMUNICACIONES", "No Aplica", "PREPARADOR FISICO", "PUBLICIDAD PLAN COMUN", "RELACIONES PUBLICAS Y COMUNICACION ORGANIZACIONAL PLAN COMUN", "Sin Carrera", "TECNICO DE ENFERMERIA", "TECNICO DE LABORATORIO CLINICO Y BANCO DE SANGRE", "TECNICO EN ADMINISTRACION", "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "TECNICO EN ELECTRICIDAD Y ENERGIAS RENOVABLES", "TECNICO EN GESTION LOGISTICA", "TECNICO EN MAQUINARIA Y VEHICULOS PESADOS", "TECNICO EN MARKETING", "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "TECNICO EN NUTRICION Y DIETETICA", "TECNICO EN ODONTOLOGIA", "TECNICO EN PREVENCION DE RIESGOS", "TECNICO EN QUIMICA Y FARMACIA", "TECNICO VETERINARIO Y PECUARIO"]}, "Melipilla": {"total": 720, "by_actividad": {"INDUCCION": 672, "TALLER": 48}, "by_tipo_usuario": {"ESTUDIANTE": 720}, "monthly": {"Enero": {"total": 11, "by_actividad": {"TALLER": 11}, "by_formato": {"EN LINEA": 11}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 540, "by_actividad": {"INDUCCION": 540}, "by_formato": {"PRESENCIAL": 540}}, "Abril": {"total": 169, "by_actividad": {"INDUCCION": 132, "TALLER": 37}, "by_formato": {"PRESENCIAL": 132, "EN LINEA": 37}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 281, "by_act": {"INDUCCION": 255, "TALLER": 26}}, "CONSTRUCCION": {"total": 87, "by_act": {"INDUCCION": 86, "TALLER": 1}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 138, "by_act": {"INDUCCION": 130, "TALLER": 8}}, "INGENIERIA": {"total": 96, "by_act": {"INDUCCION": 93, "TALLER": 3}}, "No Aplica": {"total": 8, "by_act": {"TALLER": 8}}, "SALUD": {"total": 109, "by_act": {"INDUCCION": 107, "TALLER": 2}}, "Sin Escuela": {"total": 1, "by_act": {"INDUCCION": 1}}}, "by_carrera": {"INGENIERIA EN INFORMATICA": 99, "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 93, "TECNICO EN ADMINISTRACION": 75, "AUDITORIA": 71, "TECNICO DE ENFERMERIA": 70, "INGENIERIA EN GESTION LOGISTICA": 57, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 50, "INGENIERIA EN CONSTRUCCION": 46, "TECNICO EN ODONTOLOGIA": 39, "INGENIERIA EN PREVENCION DE RIESGOS": 31, "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 23, "INGENIERIA EN REDES Y TELECOMUNICACIONES": 23, "ANALISTA PROGRAMADOR": 16, "TECNICO EN CONSTRUCCION": 10, "No Aplica": 8}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 672}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 22}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 12}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 9}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 5}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "CONSTRUCCION", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica", "SALUD", "Sin Escuela"], "carreras": ["ADMINISTRACION DE EMPRESAS MENCION MARKETING", "ANALISTA PROGRAMADOR", "ASISTENTE EJECUTIVO", "AUDITORIA", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN CONSTRUCCION", "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "INGENIERIA EN PREVENCION DE RIESGOS", "INGENIERIA EN REDES Y TELECOMUNICACIONES", "No Aplica", "Sin Carrera", "TECNICO DE ENFERMERIA", "TECNICO EN ADMINISTRACION", "TECNICO EN CONSTRUCCION", "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "TECNICO EN ODONTOLOGIA"]}, "Padre Alonso De Ovalle": {"total": 1734, "by_actividad": {"INDUCCION": 1541, "TALLER": 168, "CHARLA": 24, "ASESORIA": 1}, "by_tipo_usuario": {"ESTUDIANTE": 1732, "DOCENTE": 2}, "monthly": {"Enero": {"total": 31, "by_actividad": {"TALLER": 31}, "by_formato": {"EN LINEA": 31}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 418, "by_actividad": {"INDUCCION": 416, "TALLER": 2}, "by_formato": {"PRESENCIAL": 418}}, "Abril": {"total": 1285, "by_actividad": {"INDUCCION": 1125, "TALLER": 135, "CHARLA": 24, "ASESORIA": 1}, "by_formato": {"PRESENCIAL": 1234, "EN LINEA": 51}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 782, "by_act": {"CHARLA": 24, "INDUCCION": 712, "TALLER": 46}}, "COMUNICACION": {"total": 1, "by_act": {"INDUCCION": 1}}, "DISENO": {"total": 4, "by_act": {"TALLER": 4}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 383, "by_act": {"ASESORIA": 1, "INDUCCION": 285, "TALLER": 97}}, "No Aplica": {"total": 11, "by_act": {"INDUCCION": 3, "TALLER": 8}}, "Sin Escuela": {"total": 1, "by_act": {"INDUCCION": 1}}, "TURISMO": {"total": 552, "by_act": {"INDUCCION": 539, "TALLER": 13}}}, "by_carrera": {"GASTRONOMIA": 475, "INGENIERIA EN COMERCIO EXTERIOR": 223, "INGENIERIA EN INFORMATICA": 200, "COMERCIO EXTERIOR": 138, "ANALISTA PROGRAMADOR": 91, "TECNICO EN GESTION LOGISTICA": 83, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 78, "INGENIERIA EN GESTION LOGISTICA": 76, "AUDITORIA": 66, "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 54, "CONTABILIDAD GENERAL MENCION LEGISLACION TRIBUTARIA": 51, "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE": 48, "TECNICO EN TURISMO Y HOSPITALIDAD": 48, "INGENIERIA EN REDES Y TELECOMUNICACIONES": 23, "ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION": 18}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 1539}, {"nombre": "COMO ELABORAR INFORMES ACADEMICOS Y PROYECTOS", "tipo": "TALLER", "n": 82}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 31}, {"nombre": "CHARLA-CONVERSATORIO", "tipo": "CHARLA", "n": 24}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 24}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 22}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 7}, {"nombre": "INDUCCION DOCENTES", "tipo": "INDUCCION", "n": 2}, {"nombre": "BUSQUEDA DE INFORMACION CON HERRAMIENTAS IA", "tipo": "TALLER", "n": 1}, {"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "ASESORIA", "n": 1}, {"nombre": "EXPLORA + ALLA DEL LIBRO O'REILLY", "tipo": "TALLER", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "COMUNICACION", "DISENO", "INFORMATICA Y TELECOMUNICACIONES", "No Aplica", "Sin Escuela", "TURISMO"], "carreras": ["ADMINISTRACION DE EMPRESAS MENCION MARKETING", "ADMINISTRACION DE RECURSOS HUMANOS", "ADMINISTRACION DE REDES COMPUTACIONALES", "ADMINISTRACION DE REDES Y TELECOMUNICACIONES", "ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION", "ADMINISTRACION FINANCIERA", "ADMINISTRACION HOTELERA", "ANALISTA PROGRAMADOR", "ANALISTA PROGRAMADOR COMPUTACIONAL", "AUDITORIA", "COMERCIO EXTERIOR", "CONTABILIDAD GENERAL MENCION LEGISLACION TRIBUTARIA", "DISENO GRAFICO", "DISENO GRAFICO (SISTEMAS DE IDENTIDAD VISUAL)", "GASTRONOMIA", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN COMERCIO EXTERIOR", "INGENIERIA EN CONECTIVIDAD Y REDES", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN REDES Y TELECOMUNICACIONES", "No Aplica", "RELACIONES PUBLICAS Y COMUNICACION ORGANIZACIONAL PLAN COMUN", "Sin Carrera", "TECNICO EN ADMINISTRACION", "TECNICO EN GESTION LOGISTICA", "TECNICO EN MARKETING", "TECNICO EN REDES Y TELECOMUNICACIONES", "TECNICO EN TURISMO Y HOSPITALIDAD", "TECNICO JURIDICO", "TURISMO DE AVENTURA", "TURISMO TECNICO MENCION EMPRESAS DE VIAJES", "TURISMO TECNICO MENCION EN EMPRESAS TURISTICAS", "TURISMO TECNICO MENCION EN TRAFICO Y CARGA AEREA", "TURISMO Y HOTELERIA"]}, "Plaza Norte": {"total": 1419, "by_actividad": {"INDUCCION": 1054, "TALLER": 365}, "by_tipo_usuario": {"ESTUDIANTE": 1391, "DOCENTE": 28}, "monthly": {"Enero": {"total": 20, "by_actividad": {"TALLER": 20}, "by_formato": {"EN LINEA": 20}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 361, "by_actividad": {"INDUCCION": 356, "TALLER": 5}, "by_formato": {"PRESENCIAL": 361}}, "Abril": {"total": 1038, "by_actividad": {"INDUCCION": 698, "TALLER": 340}, "by_formato": {"PRESENCIAL": 994, "EN LINEA": 44}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 820, "by_act": {"INDUCCION": 493, "TALLER": 327}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 194, "by_act": {"INDUCCION": 185, "TALLER": 9}}, "INGENIERIA": {"total": 365, "by_act": {"INDUCCION": 348, "TALLER": 17}}, "No Aplica": {"total": 40, "by_act": {"INDUCCION": 28, "TALLER": 12}}}, "by_carrera": {"INGENIERIA EN GESTION LOGISTICA": 234, "INGENIERIA EN COMERCIO EXTERIOR": 181, "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL": 128, "INGENIERIA EN INFORMATICA": 122, "TECNICO EN GESTION LOGISTICA": 116, "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 95, "INGENIERIA EN MARKETING DIGITAL": 78, "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 68, "AUDITORIA": 55, "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL": 55, "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 51, "ANALISTA PROGRAMADOR": 44, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 41, "No Aplica": 40, "TECNICO EN ADMINISTRACION": 37}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 1026}, {"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "TALLER", "n": 301}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 32}, {"nombre": "INDUCCION DOCENTES", "tipo": "INDUCCION", "n": 28}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 17}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 9}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 6}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica"], "carreras": ["ANALISTA PROGRAMADOR", "AUDITORIA", "CONTABILIDAD GENERAL MENCION LEGISLACION TRIBUTARIA", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO", "INGENIERIA EN ADMINISTRACION MENCION MARKETING", "INGENIERIA EN COMERCIO EXTERIOR", "INGENIERIA EN CONECTIVIDAD Y REDES", "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "INGENIERIA EN REDES Y TELECOMUNICACIONES", "No Aplica", "TECNICO EN ADMINISTRACION", "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL DUAL", "TECNICO EN GESTION LOGISTICA", "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA"]}, "Plaza Oeste": {"total": 1448, "by_actividad": {"TALLER": 811, "INDUCCION": 578, "CHARLA": 59}, "by_tipo_usuario": {"ESTUDIANTE": 1448}, "monthly": {"Enero": {"total": 14, "by_actividad": {"TALLER": 14}, "by_formato": {"EN LINEA": 14}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 740, "by_actividad": {"INDUCCION": 375, "TALLER": 365}, "by_formato": {"PRESENCIAL": 740}}, "Abril": {"total": 694, "by_actividad": {"TALLER": 432, "INDUCCION": 203, "CHARLA": 59}, "by_formato": {"PRESENCIAL": 657, "EN LINEA": 37}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 1026, "by_act": {"CHARLA": 39, "INDUCCION": 354, "TALLER": 633}}, "DISENO": {"total": 214, "by_act": {"CHARLA": 20, "INDUCCION": 99, "TALLER": 95}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 201, "by_act": {"INDUCCION": 124, "TALLER": 77}}, "INGENIERIA": {"total": 1, "by_act": {"INDUCCION": 1}}, "No Aplica": {"total": 6, "by_act": {"TALLER": 6}}}, "by_carrera": {"INGENIERIA EN GESTION LOGISTICA": 290, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 202, "INGENIERIA EN MARKETING DIGITAL": 202, "INGENIERIA EN INFORMATICA": 165, "TECNICO EN GESTION LOGISTICA": 115, "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 96, "DISENO GRAFICO": 89, "AUDITORIA": 74, "DISENO DE AMBIENTES": 71, "TECNICO EN ADMINISTRACION": 39, "DISENO INDUSTRIAL E INNOVACION EN PRODUCTOS": 23, "INGENIERIA EN REDES Y TELECOMUNICACIONES": 21, "DISENO INDUSTRIAL": 19, "ANALISTA PROGRAMADOR": 14, "DISENO GRAFICO (SISTEMAS DE IDENTIDAD VISUAL)": 9}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 578}, {"nombre": "BUSQUEDA DE INFORMACION CON HERRAMIENTAS IA", "tipo": "TALLER", "n": 453}, {"nombre": "COMO ELABORAR INFORMES ACADEMICOS Y PROYECTOS", "tipo": "TALLER", "n": 153}, {"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "TALLER", "n": 110}, {"nombre": "CHARLA-CONVERSATORIO", "tipo": "CHARLA", "n": 59}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 39}, {"nombre": "PRESENTACION EFECTIVAS EN CANVA", "tipo": "TALLER", "n": 27}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 11}, {"nombre": "PRESENTACIONES EFECTIVAS", "tipo": "TALLER", "n": 9}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 8}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "DISENO", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica"], "carreras": ["ANALISTA PROGRAMADOR", "AUDITORIA", "CONTABILIDAD GENERAL MENCION LEGISLACION TRIBUTARIA", "DISENO DE AMBIENTES", "DISENO GRAFICO", "DISENO GRAFICO (INTERFACES E INTERACCIONES)", "DISENO GRAFICO (SISTEMAS DE IDENTIDAD VISUAL)", "DISENO INDUSTRIAL", "DISENO INDUSTRIAL E INNOVACION EN PRODUCTOS", "INGENIERIA EN ADMINISTRACION DE RECURSOS HUMANOS", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN REDES Y TELECOMUNICACIONES", "No Aplica", "TECNICO EN ADMINISTRACION", "TECNICO EN ELECTRICIDAD Y ELECTRONICA", "TECNICO EN GESTION LOGISTICA", "TECNICO EN MARKETING", "TECNICO EN TELECOMUNICACIONES", "TECNICO JURIDICO"]}, "Plaza Vespucio": {"total": 305, "by_actividad": {"TALLER": 305}, "by_tipo_usuario": {"ESTUDIANTE": 305}, "monthly": {"Enero": {"total": 8, "by_actividad": {"TALLER": 8}, "by_formato": {"EN LINEA": 8}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 163, "by_actividad": {"TALLER": 163}, "by_formato": {"PRESENCIAL": 163}}, "Abril": {"total": 134, "by_actividad": {"TALLER": 134}, "by_formato": {"PRESENCIAL": 86, "EN LINEA": 48}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 261, "by_act": {"TALLER": 261}}, "COMUNICACION": {"total": 25, "by_act": {"TALLER": 25}}, "DISENO": {"total": 2, "by_act": {"TALLER": 2}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 14, "by_act": {"TALLER": 14}}, "No Aplica": {"total": 3, "by_act": {"TALLER": 3}}}, "by_carrera": {"INGENIERIA EN MARKETING DIGITAL": 223, "PUBLICIDAD": 23, "INGENIERIA EN INFORMATICA": 11, "AUDITORIA": 7, "TECNICO EN MARKETING": 7, "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 6, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 5, "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO": 4, "No Aplica": 3, "ANALISTA PROGRAMADOR": 2, "CONTABILIDAD GENERAL MENCION LEGISLACION TRIBUTARIA": 2, "INGENIERIA EN MARKETING": 2, "PUBLICIDAD PLAN COMUN": 2, "TECNICO EN GESTION LOGISTICA": 2, "ADMINISTRACION FINANCIERA": 1}, "by_nombre": [{"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "TALLER", "n": 170}, {"nombre": "BUSQUEDA DE INFORMACION CON HERRAMIENTAS IA", "tipo": "TALLER", "n": 79}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 37}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 13}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 5}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "COMUNICACION", "DISENO", "INFORMATICA Y TELECOMUNICACIONES", "No Aplica"], "carreras": ["ADMINISTRACION FINANCIERA", "ANALISTA PROGRAMADOR", "AUDITORIA", "CONTABILIDAD GENERAL MENCION LEGISLACION TRIBUTARIA", "DISENO GRAFICO", "DISENO GRAFICO (SISTEMAS DE IDENTIDAD VISUAL)", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE", "INGENIERIA EN MARKETING", "INGENIERIA EN MARKETING DIGITAL", "No Aplica", "PUBLICIDAD", "PUBLICIDAD PLAN COMUN", "TECNICO EN ADMINISTRACION", "TECNICO EN GESTION LOGISTICA", "TECNICO EN MARKETING"]}, "Puente Alto": {"total": 359, "by_actividad": {"INDUCCION": 203, "TALLER": 95, "ASESORIA": 61}, "by_tipo_usuario": {"ESTUDIANTE": 359}, "monthly": {"Enero": {"total": 41, "by_actividad": {"TALLER": 41}, "by_formato": {"EN LINEA": 41}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 2, "by_actividad": {"ASESORIA": 2}, "by_formato": {"PRESENCIAL": 2}}, "Abril": {"total": 316, "by_actividad": {"INDUCCION": 203, "ASESORIA": 59, "TALLER": 54}, "by_formato": {"PRESENCIAL": 262, "EN LINEA": 54}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 144, "by_act": {"ASESORIA": 17, "INDUCCION": 87, "TALLER": 40}}, "CONSTRUCCION": {"total": 23, "by_act": {"ASESORIA": 14, "TALLER": 9}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 37, "by_act": {"INDUCCION": 29, "TALLER": 8}}, "INGENIERIA": {"total": 102, "by_act": {"ASESORIA": 7, "INDUCCION": 87, "TALLER": 8}}, "No Aplica": {"total": 21, "by_act": {"ASESORIA": 3, "TALLER": 18}}, "RECURSOS NATURALES": {"total": 14, "by_act": {"ASESORIA": 7, "TALLER": 7}}, "SALUD": {"total": 18, "by_act": {"ASESORIA": 13, "TALLER": 5}}}, "by_carrera": {"INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 40, "TECNICO EN ADMINISTRACION": 38, "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 38, "INGENIERIA EN MARKETING DIGITAL": 36, "INGENIERIA EN INFORMATICA": 34, "TECNICO EN OPERACION Y SUPERVISION DE PROCESOS MINEROS": 28, "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 26, "No Aplica": 22, "INGENIERIA EN CONSTRUCCION": 13, "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO": 10, "TECNICO VETERINARIO Y PECUARIO": 8, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 7, "INGENIERIA EN PREVENCION DE RIESGOS": 7, "AUDITORIA": 6, "INGENIERIA EN COMERCIO EXTERIOR": 6}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 203}, {"nombre": "ASESORIA ACADEMICA", "tipo": "ASESORIA", "n": 61}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 36}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 32}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 17}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 10}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "CONSTRUCCION", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica", "RECURSOS NATURALES", "SALUD"], "carreras": ["ANALISTA PROGRAMADOR", "AUDITORIA", "FISIOTERAPEUTA DEPORTIVO", "INFORMATICA BIOMEDICA", "INGENIERIA AGRICOLA", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO", "INGENIERIA EN COMERCIO EXTERIOR", "INGENIERIA EN CONSTRUCCION", "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "INGENIERIA EN INFORMATICA", "INGENIERIA EN MARKETING", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "INGENIERIA EN MEDIO AMBIENTE", "INGENIERIA EN PREVENCION DE RIESGOS", "No Aplica", "PREPARADOR FISICO", "TECNICO DE ENFERMERIA", "TECNICO EN ADMINISTRACION", "TECNICO EN CALIDAD DE ALIMENTOS", "TECNICO EN CONSTRUCCION", "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "TECNICO EN ODONTOLOGIA", "TECNICO EN OPERACION Y SUPERVISION DE PROCESOS MINEROS", "TECNICO EN QUIMICA Y FARMACIA", "TECNICO EN RADIODIAGNOSTICO Y RADIOTERAPIA", "TECNICO VETERINARIO", "TECNICO VETERINARIO Y PECUARIO"]}, "Puerto Montt": {"total": 826, "by_actividad": {"INDUCCION": 599, "TALLER": 227}, "by_tipo_usuario": {"ESTUDIANTE": 826}, "monthly": {"Enero": {"total": 9, "by_actividad": {"TALLER": 9}, "by_formato": {"EN LINEA": 9}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 736, "by_actividad": {"INDUCCION": 547, "TALLER": 189}, "by_formato": {"PRESENCIAL": 736}}, "Abril": {"total": 81, "by_actividad": {"INDUCCION": 52, "TALLER": 29}, "by_formato": {"PRESENCIAL": 67, "EN LINEA": 14}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 297, "by_act": {"INDUCCION": 222, "TALLER": 75}}, "CONSTRUCCION": {"total": 46, "by_act": {"INDUCCION": 45, "TALLER": 1}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 134, "by_act": {"INDUCCION": 90, "TALLER": 44}}, "INGENIERIA": {"total": 232, "by_act": {"INDUCCION": 161, "TALLER": 71}}, "No Aplica": {"total": 5, "by_act": {"TALLER": 5}}, "SALUD": {"total": 83, "by_act": {"INDUCCION": 53, "TALLER": 30}}, "TURISMO": {"total": 29, "by_act": {"INDUCCION": 28, "TALLER": 1}}}, "by_carrera": {"INGENIERIA EN INFORMATICA": 134, "INGENIERIA EN GESTION LOGISTICA": 117, "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 92, "INGENIERIA EN MAQUINARIA Y VEHICULOS PESADOS": 66, "TECNICO EN ODONTOLOGIA": 59, "INGENIERIA EN MANTENIMIENTO INDUSTRIAL": 58, "INGENIERIA EN MARKETING DIGITAL": 50, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 48, "INGENIERIA EN CONSTRUCCION": 46, "TECNICO EN ADMINISTRACION": 32, "ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION": 29, "TECNICO DE ENFERMERIA": 24, "AUDITORIA": 22, "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 22, "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 14}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 599}, {"nombre": "APRENDE + CON IA DESCUBRE NOTEBOOKLM", "tipo": "TALLER", "n": 189}, {"nombre": "COMO ELABORAR INFORMES ACADEMICOS Y PROYECTOS", "tipo": "TALLER", "n": 15}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 12}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 5}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 5}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "CONSTRUCCION", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica", "SALUD", "TURISMO"], "carreras": ["ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION", "AUDITORIA", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO", "INGENIERIA EN CONSTRUCCION", "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN MANTENIMIENTO INDUSTRIAL", "INGENIERIA EN MAQUINARIA Y VEHICULOS PESADOS", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "No Aplica", "TECNICO DE ENFERMERIA", "TECNICO EN ADMINISTRACION", "TECNICO EN MAQUINARIA Y VEHICULOS PESADOS", "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "TECNICO EN ODONTOLOGIA"]}, "San Andr\u00e9s de Concepci\u00f3n": {"total": 1842, "by_actividad": {"INDUCCION": 1544, "TALLER": 294, "ASESORIA": 4}, "by_tipo_usuario": {"ESTUDIANTE": 1842}, "monthly": {"Enero": {"total": 8, "by_actividad": {"TALLER": 8}, "by_formato": {"EN LINEA": 8}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 1005, "by_actividad": {"INDUCCION": 967, "TALLER": 38}, "by_formato": {"PRESENCIAL": 1005}}, "Abril": {"total": 829, "by_actividad": {"INDUCCION": 577, "TALLER": 248, "ASESORIA": 4}, "by_formato": {"PRESENCIAL": 801, "EN LINEA": 28}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 394, "by_act": {"INDUCCION": 318, "TALLER": 76}}, "COMUNICACION": {"total": 233, "by_act": {"INDUCCION": 209, "TALLER": 24}}, "CONSTRUCCION": {"total": 152, "by_act": {"ASESORIA": 4, "INDUCCION": 116, "TALLER": 32}}, "DISENO": {"total": 122, "by_act": {"INDUCCION": 116, "TALLER": 6}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 151, "by_act": {"INDUCCION": 118, "TALLER": 33}}, "INGENIERIA": {"total": 371, "by_act": {"INDUCCION": 333, "TALLER": 38}}, "No Aplica": {"total": 5, "by_act": {"TALLER": 5}}, "SALUD": {"total": 139, "by_act": {"INDUCCION": 107, "TALLER": 32}}, "TURISMO": {"total": 275, "by_act": {"INDUCCION": 227, "TALLER": 48}}}, "by_carrera": {"GASTRONOMIA INTERNACIONAL": 165, "INGENIERIA EN INFORMATICA": 133, "INGENIERIA EN COMERCIO EXTERIOR": 128, "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 119, "INGENIERIA EN MAQUINARIA Y VEHICULOS PESADOS": 105, "ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION": 99, "COMUNICACION AUDIOVISUAL": 97, "INGENIERIA EN MARKETING DIGITAL": 97, "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL": 91, "TECNICO DE ENFERMERIA": 89, "INGENIERIA EN PREVENCION DE RIESGOS": 83, "INGENIERIA EN GESTION LOGISTICA": 79, "INGENIERIA EN CONSTRUCCION": 67, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 62, "DISENO GRAFICO": 57}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 1543}, {"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "TALLER", "n": 212}, {"nombre": "APRENDE + CON IA DESCUBRE NOTEBOOKLM", "tipo": "TALLER", "n": 44}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 14}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 14}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 5}, {"nombre": "ASESORIA ACADEMICA", "tipo": "ASESORIA", "n": 4}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 3}, {"nombre": "BUSQUEDA DE INFORMACION CON HERRAMIENTAS IA", "tipo": "TALLER", "n": 2}, {"nombre": "APRENDE + CON IA DESCUBRE NOTEBOOKLM", "tipo": "INDUCCION", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "COMUNICACION", "CONSTRUCCION", "DISENO", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica", "SALUD", "TURISMO"], "carreras": ["ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION", "ANIMACION DIGITAL", "COMUNICACION AUDIOVISUAL", "DISENO GRAFICO", "DISENO GRAFICO (INTERFACES E INTERACCIONES)", "DISENO INDUSTRIAL E INNOVACION EN PRODUCTOS", "ECOTURISMO", "GASTRONOMIA INTERNACIONAL", "ILUSTRACION", "ILUSTRACION PARA CONTEXTOS GLOBALES", "INFORMATICA BIOMEDICA", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN COMERCIO EXTERIOR", "INGENIERIA EN CONSTRUCCION", "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE", "INGENIERIA EN MANTENIMIENTO INDUSTRIAL", "INGENIERIA EN MAQUINARIA Y VEHICULOS PESADOS", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "INGENIERIA EN PREVENCION DE RIESGOS", "INGENIERIA EN REDES Y TELECOMUNICACIONES", "INGENIERIA EN SONIDO", "No Aplica", "PUBLICIDAD PLAN COMUN", "RELACIONES PUBLICAS Y COMUNICACION ORGANIZACIONAL PLAN COMUN", "TECNICO DE ENFERMERIA", "TECNICO EN CONSTRUCCION", "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "TECNICO EN ODONTOLOGIA"]}, "San Bernardo": {"total": 2458, "by_actividad": {"INDUCCION": 1330, "TALLER": 989, "CHARLA": 109, "ASESORIA": 30}, "by_tipo_usuario": {"ESTUDIANTE": 2458}, "monthly": {"Enero": {"total": 23, "by_actividad": {"TALLER": 23}, "by_formato": {"EN LINEA": 23}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 1377, "by_actividad": {"INDUCCION": 1327, "TALLER": 50}, "by_formato": {"PRESENCIAL": 1377}}, "Abril": {"total": 1058, "by_actividad": {"TALLER": 916, "CHARLA": 109, "ASESORIA": 30, "INDUCCION": 3}, "by_formato": {"PRESENCIAL": 1024, "EN LINEA": 34}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 923, "by_act": {"ASESORIA": 11, "INDUCCION": 596, "TALLER": 316}}, "CONSTRUCCION": {"total": 233, "by_act": {"ASESORIA": 4, "CHARLA": 37, "INDUCCION": 92, "TALLER": 100}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 510, "by_act": {"ASESORIA": 3, "CHARLA": 35, "INDUCCION": 305, "TALLER": 167}}, "INGENIERIA": {"total": 433, "by_act": {"ASESORIA": 4, "CHARLA": 29, "INDUCCION": 247, "TALLER": 153}}, "No Aplica": {"total": 15, "by_act": {"INDUCCION": 5, "TALLER": 10}}, "RECURSOS NATURALES": {"total": 77, "by_act": {"ASESORIA": 6, "CHARLA": 2, "INDUCCION": 24, "TALLER": 45}}, "SALUD": {"total": 206, "by_act": {"ASESORIA": 2, "CHARLA": 6, "INDUCCION": 30, "TALLER": 168}}, "Sin Escuela": {"total": 1, "by_act": {"TALLER": 1}}, "TURISMO": {"total": 60, "by_act": {"INDUCCION": 31, "TALLER": 29}}}, "by_carrera": {"INGENIERIA EN INFORMATICA": 332, "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 231, "INGENIERIA EN GESTION LOGISTICA": 209, "INGENIERIA EN CONSTRUCCION": 165, "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS": 122, "ANALISTA PROGRAMADOR": 113, "TECNICO DE ENFERMERIA": 102, "AUDITORIA": 94, "INGENIERIA EN COMERCIO EXTERIOR": 94, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 88, "COMERCIO EXTERIOR": 81, "INGENIERIA EN MARKETING DIGITAL": 77, "INGENIERIA EN MAQUINARIA Y VEHICULOS PESADOS": 71, "TECNICO VETERINARIO Y PECUARIO": 65, "TECNICO EN ADMINISTRACION": 63}, "by_nombre": [{"nombre": "BUSQUEDA DE INFORMACION CON HERRAMIENTAS IA", "tipo": "TALLER", "n": 932}, {"nombre": "CHARLA-CONVERSATORIO", "tipo": "CHARLA", "n": 109}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 28}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 19}, {"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "ASESORIA", "n": 16}, {"nombre": "COMO ELABORAR INFORMES ACADEMICOS Y PROYECTOS", "tipo": "ASESORIA", "n": 14}, {"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 9}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 7}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 3}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "CONSTRUCCION", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica", "RECURSOS NATURALES", "SALUD", "Sin Escuela", "TURISMO"], "carreras": ["ADMINISTRACION DE REDES Y TELECOMUNICACIONES", "ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION", "ANALISTA PROGRAMADOR", "AUDITORIA", "COMERCIO EXTERIOR", "CONTABILIDAD GENERAL MENCION LEGISLACION TRIBUTARIA", "DIBUJO Y MODELAMIENTO ARQUITECTONICO Y ESTRUCTURAL", "ECOTURISMO", "INFORMATICA BIOMEDICA", "INGENIERIA AGRICOLA", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO", "INGENIERIA EN COMERCIO EXTERIOR", "INGENIERIA EN CONECTIVIDAD Y REDES", "INGENIERIA EN CONSTRUCCION", "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE", "INGENIERIA EN INFORMATICA MENCION INGENIERIA DE DATOS", "INGENIERIA EN MANTENIMIENTO INDUSTRIAL", "INGENIERIA EN MAQUINARIA Y VEHICULOS PESADOS", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "INGENIERIA EN MEDIO AMBIENTE", "INGENIERIA EN PREVENCION DE RIESGOS", "INGENIERIA EN REDES Y TELECOMUNICACIONES", "No Aplica", "PREPARADOR FISICO", "Sin Carrera", "TECNICO AGRICOLA", "TECNICO DE ENFERMERIA", "TECNICO DE LABORATORIO CLINICO Y BANCO DE SANGRE", "TECNICO EN ADMINISTRACION", "TECNICO EN CONSTRUCCION", "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "TECNICO EN GESTION LOGISTICA", "TECNICO EN MAQUINARIA Y VEHICULOS PESADOS", "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "TECNICO EN ODONTOLOGIA", "TECNICO EN PREVENCION DE RIESGOS", "TECNICO EN QUIMICA Y FARMACIA", "TECNICO VETERINARIO Y PECUARIO", "TURISMO Y HOTELERIA"]}, "San Carlos De Apoquindo": {"total": 1625, "by_actividad": {"INDUCCION": 1320, "TALLER": 296, "ASESORIA": 9}, "by_tipo_usuario": {"ESTUDIANTE": 1625}, "monthly": {"Enero": {"total": 23, "by_actividad": {"TALLER": 23}, "by_formato": {"EN LINEA": 23}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 1047, "by_actividad": {"INDUCCION": 1047}, "by_formato": {"PRESENCIAL": 1047}}, "Abril": {"total": 555, "by_actividad": {"TALLER": 273, "INDUCCION": 273, "ASESORIA": 9}, "by_formato": {"PRESENCIAL": 527, "EN LINEA": 28}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 261, "by_act": {"INDUCCION": 256, "TALLER": 5}}, "COMUNICACION": {"total": 607, "by_act": {"INDUCCION": 582, "TALLER": 25}}, "DISENO": {"total": 303, "by_act": {"INDUCCION": 297, "TALLER": 6}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 333, "by_act": {"INDUCCION": 83, "TALLER": 250}}, "INGENIERIA": {"total": 1, "by_act": {"INDUCCION": 1}}, "No Aplica": {"total": 20, "by_act": {"ASESORIA": 9, "INDUCCION": 1, "TALLER": 10}}, "SALUD": {"total": 100, "by_act": {"INDUCCION": 100}}}, "by_carrera": {"INGENIERIA EN INFORMATICA": 259, "COMUNICACION AUDIOVISUAL": 178, "ANIMACION DIGITAL": 126, "DISENO DE VESTUARIO": 99, "INGENIERIA EN COMERCIO EXTERIOR": 98, "TECNICO AUDIOVISUAL": 88, "INGENIERIA EN MARKETING DIGITAL": 81, "INGENIERIA EN SONIDO": 81, "TECNICO DE ENFERMERIA": 73, "TECNOLOGIA EN SONIDO E ILUMINACION": 56, "DISENO DE AMBIENTES": 54, "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE": 54, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 42, "DISENO GRAFICO": 41, "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO": 39}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 1320}, {"nombre": "EXPLORA + ALLA DEL LIBRO O'REILLY", "tipo": "TALLER", "n": 245}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 19}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 18}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 10}, {"nombre": "ASESORIA ACADEMICA", "tipo": "ASESORIA", "n": 9}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 4}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "COMUNICACION", "DISENO", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica", "SALUD"], "carreras": ["ACTUACION", "ANIMACION DIGITAL", "COMUNICACION AUDIOVISUAL", "DISENO DE AMBIENTES", "DISENO DE VESTUARIO", "DISENO GRAFICO", "DISENO GRAFICO (INTERFACES E INTERACCIONES)", "DISENO GRAFICO (SISTEMAS DE IDENTIDAD VISUAL)", "DISENO INDUSTRIAL E INNOVACION EN PRODUCTOS", "ILUSTRACION PARA CONTEXTOS GLOBALES", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO", "INGENIERIA EN ADMINISTRACION MENCION MARKETING", "INGENIERIA EN COMERCIO EXTERIOR", "INGENIERIA EN INFORMATICA", "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE", "INGENIERIA EN INFORMATICA MENCION INGENIERIA DE DATOS", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "INGENIERIA EN SONIDO", "No Aplica", "PUBLICIDAD", "PUBLICIDAD PLAN COMUN", "RELACIONES PUBLICAS MENCION MARKETING", "RELACIONES PUBLICAS Y COMUNICACION ORGANIZACIONAL PLAN COMUN", "TECNICO AUDIOVISUAL", "TECNICO DE ENFERMERIA", "TECNICO EN ODONTOLOGIA", "TECNOLOGIA EN SONIDO", "TECNOLOGIA EN SONIDO E ILUMINACION"]}, "San Joaqu\u00edn": {"total": 1742, "by_actividad": {"INDUCCION": 1396, "TALLER": 345, "ASESORIA": 1}, "by_tipo_usuario": {"ESTUDIANTE": 1742}, "monthly": {"Enero": {"total": 46, "by_actividad": {"INDUCCION": 30, "TALLER": 16}, "by_formato": {"PRESENCIAL": 30, "EN LINEA": 16}}, "Febrero": {"total": 9, "by_actividad": {"INDUCCION": 9}, "by_formato": {"PRESENCIAL": 9}}, "Marzo": {"total": 1407, "by_actividad": {"INDUCCION": 1262, "TALLER": 145}, "by_formato": {"PRESENCIAL": 1407}}, "Abril": {"total": 280, "by_actividad": {"TALLER": 184, "INDUCCION": 95, "ASESORIA": 1}, "by_formato": {"PRESENCIAL": 255, "EN LINEA": 25}}}, "by_escuela": {"INFORMATICA Y TELECOMUNICACIONES": {"total": 314, "by_act": {"INDUCCION": 266, "TALLER": 48}}, "INGENIERIA": {"total": 806, "by_act": {"ASESORIA": 1, "INDUCCION": 776, "TALLER": 29}}, "No Aplica": {"total": 6, "by_act": {"TALLER": 6}}, "SALUD": {"total": 616, "by_act": {"INDUCCION": 354, "TALLER": 262}}}, "by_carrera": {"TECNICO DE ENFERMERIA": 304, "INGENIERIA EN INFORMATICA": 235, "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 183, "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA": 148, "TECNICO EN ODONTOLOGIA": 113, "TECNICO EN RADIODIAGNOSTICO Y RADIOTERAPIA": 110, "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL": 105, "INGENIERIA EN MAQUINARIA Y VEHICULOS PESADOS": 101, "TECNICO EN MAQUINARIA Y VEHICULOS PESADOS": 89, "INGENIERIA EN MANTENIMIENTO INDUSTRIAL": 79, "TECNICO EN QUIMICA Y FARMACIA": 52, "TECNICO EN ELECTRICIDAD Y ENERGIAS RENOVABLES": 51, "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL": 49, "ANALISTA PROGRAMADOR": 42, "INFORMATICA BIOMEDICA": 36}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 1396}, {"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "TALLER", "n": 303}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 15}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 13}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 11}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 2}, {"nombre": "ASESORIA ACADEMICA", "tipo": "ASESORIA", "n": 1}, {"nombre": "TALLER HABILIDADES BASICAS DE COMPUTACION", "tipo": "TALLER", "n": 1}], "escuelas": ["INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica", "SALUD"], "carreras": ["ANALISTA PROGRAMADOR", "INFORMATICA BIOMEDICA", "INGENIERIA EN CONECTIVIDAD Y REDES", "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "INGENIERIA EN INFORMATICA", "INGENIERIA EN INFORMATICA MENCION DESARROLLO DE SOFTWARE", "INGENIERIA EN MANTENIMIENTO INDUSTRIAL", "INGENIERIA EN MAQUINARIA Y VEHICULOS PESADOS", "INGENIERIA EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "INGENIERIA EN REDES Y TELECOMUNICACIONES", "No Aplica", "TECNICO DE ENFERMERIA", "TECNICO DE LABORATORIO CLINICO Y BANCO DE SANGRE", "TECNICO EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "TECNICO EN ELECTRICIDAD Y ENERGIAS RENOVABLES", "TECNICO EN MANTENIMIENTO ELECTROMECANICO", "TECNICO EN MAQUINARIA Y VEHICULOS PESADOS", "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "TECNICO EN ODONTOLOGIA", "TECNICO EN QUIMICA Y FARMACIA", "TECNICO EN RADIODIAGNOSTICO Y RADIOTERAPIA"]}, "Valpara\u00edso": {"total": 82, "by_actividad": {"TALLER": 55, "INDUCCION": 27}, "by_tipo_usuario": {"ESTUDIANTE": 82}, "monthly": {"Enero": {"total": 17, "by_actividad": {"TALLER": 17}, "by_formato": {"EN LINEA": 17}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 45, "by_actividad": {"INDUCCION": 27, "TALLER": 18}, "by_formato": {"PRESENCIAL": 45}}, "Abril": {"total": 20, "by_actividad": {"TALLER": 20}, "by_formato": {"EN LINEA": 20}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 5, "by_act": {"INDUCCION": 3, "TALLER": 2}}, "CONSTRUCCION": {"total": 6, "by_act": {"INDUCCION": 1, "TALLER": 5}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 7, "by_act": {"INDUCCION": 3, "TALLER": 4}}, "INGENIERIA": {"total": 5, "by_act": {"TALLER": 5}}, "No Aplica": {"total": 12, "by_act": {"TALLER": 12}}, "RECURSOS NATURALES": {"total": 1, "by_act": {"TALLER": 1}}, "SALUD": {"total": 27, "by_act": {"INDUCCION": 6, "TALLER": 21}}, "TURISMO": {"total": 19, "by_act": {"INDUCCION": 14, "TALLER": 5}}}, "by_carrera": {"INFORMATICA BIOMEDICA": 13, "No Aplica": 12, "GASTRONOMIA": 9, "TECNICO DE ENFERMERIA": 6, "INGENIERIA EN INFORMATICA": 5, "TECNICO EN QUIMICA Y FARMACIA": 5, "ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION": 3, "GASTRONOMIA INTERNACIONAL": 3, "TECNICO DE LABORATORIO CLINICO Y BANCO DE SANGRE": 3, "ADMINISTRACION HOTELERA": 2, "ANALISTA PROGRAMADOR": 2, "INGENIERIA EN COMERCIO EXTERIOR": 2, "INGENIERIA EN CONSTRUCCION": 2, "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL": 2, "INGENIERIA EN PREVENCION DE RIESGOS": 2}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 27}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 13}, {"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "TALLER", "n": 12}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 9}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 8}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 7}, {"nombre": "TRIGONOMETRIA APLICADA", "tipo": "TALLER", "n": 6}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "CONSTRUCCION", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica", "RECURSOS NATURALES", "SALUD", "TURISMO"], "carreras": ["ADMINISTRACION EN TURISMO Y HOSPITALIDAD MENCION", "ADMINISTRACION HOTELERA", "ADMINISTRACION TURISTICA", "ANALISTA PROGRAMADOR", "ECOTURISMO", "GASTRONOMIA", "GASTRONOMIA INTERNACIONAL", "INFORMATICA BIOMEDICA", "INGENIERIA EN COMERCIO EXTERIOR", "INGENIERIA EN CONSTRUCCION", "INGENIERIA EN ELECTRICIDAD Y AUTOMATIZACION INDUSTRIAL", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN PREVENCION DE RIESGOS", "No Aplica", "TECNICO DE ENFERMERIA", "TECNICO DE LABORATORIO CLINICO Y BANCO DE SANGRE", "TECNICO EN CONSTRUCCION", "TECNICO EN GEOLOGIA Y CONTROL DE SONDAJE", "TECNICO EN GESTION LOGISTICA", "TECNICO EN MECANICA AUTOMOTRIZ Y AUTOTRONICA", "TECNICO EN OPERACION Y SUPERVISION DE PROCESOS MINEROS", "TECNICO EN QUIMICA Y FARMACIA", "TECNICO TOPOGRAFO GEOMATICO"]}, "Vi\u00f1a Del Mar": {"total": 1327, "by_actividad": {"INDUCCION": 952, "TALLER": 212, "ASESORIA": 163}, "by_tipo_usuario": {"ESTUDIANTE": 1315, "DOCENTE": 12}, "monthly": {"Enero": {"total": 16, "by_actividad": {"TALLER": 16}, "by_formato": {"EN LINEA": 16}}, "Febrero": {"total": 0, "by_actividad": {}, "by_formato": {}}, "Marzo": {"total": 664, "by_actividad": {"INDUCCION": 489, "ASESORIA": 159, "TALLER": 16}, "by_formato": {"PRESENCIAL": 664}}, "Abril": {"total": 647, "by_actividad": {"INDUCCION": 463, "TALLER": 180, "ASESORIA": 4}, "by_formato": {"PRESENCIAL": 469, "EN LINEA": 178}}}, "by_escuela": {"ADMINISTRACION Y NEGOCIOS": {"total": 480, "by_act": {"ASESORIA": 147, "INDUCCION": 320, "TALLER": 13}}, "COMUNICACION": {"total": 297, "by_act": {"ASESORIA": 1, "INDUCCION": 182, "TALLER": 114}}, "DISENO": {"total": 242, "by_act": {"INDUCCION": 178, "TALLER": 64}}, "INFORMATICA Y TELECOMUNICACIONES": {"total": 177, "by_act": {"ASESORIA": 1, "INDUCCION": 173, "TALLER": 3}}, "No Aplica": {"total": 24, "by_act": {"ASESORIA": 13, "TALLER": 11}}, "SALUD": {"total": 107, "by_act": {"ASESORIA": 1, "INDUCCION": 99, "TALLER": 7}}}, "by_carrera": {"ANIMACION DIGITAL": 173, "AUDITORIA": 144, "PREPARADOR FISICO": 104, "INGENIERIA EN INFORMATICA": 90, "DISENO DE AMBIENTES": 80, "DISENO DE VESTUARIO": 73, "ANALISTA PROGRAMADOR": 69, "CONTABILIDAD GENERAL MENCION LEGISLACION TRIBUTARIA": 58, "INGENIERIA EN COMERCIO EXTERIOR": 52, "COMUNICACION AUDIOVISUAL": 49, "INGENIERIA EN GESTION LOGISTICA": 41, "INGENIERIA EN MARKETING DIGITAL": 41, "INGENIERIA EN SONIDO": 41, "DISENO GRAFICO": 37, "INGENIERIA EN ADMINISTRACION MENCION FINANZAS": 36}, "by_nombre": [{"nombre": "INDUCCION ESTUDIANTES", "tipo": "INDUCCION", "n": 952}, {"nombre": "ASESORIA ACADEMICA", "tipo": "ASESORIA", "n": 151}, {"nombre": "ASESORIA ACADEMICA", "tipo": "TALLER", "n": 112}, {"nombre": "RECURSOS DE APRENDIZAJE PARA LA CARRERA DE DISENO DE AMBIENTES", "tipo": "TALLER", "n": 54}, {"nombre": "DISENA CON IA EN CANVA", "tipo": "TALLER", "n": 13}, {"nombre": "INDUCCION DOCENTES", "tipo": "ASESORIA", "n": 12}, {"nombre": "CITA CON ESTILO TALLER DE NORMAS APA", "tipo": "TALLER", "n": 9}, {"nombre": "DOMINA LA IA TALLER DE PROMPT", "tipo": "TALLER", "n": 7}, {"nombre": "INDUCCION ESTUDIANTES", "tipo": "TALLER", "n": 7}, {"nombre": "EXPLORA + ALLA DEL LIBRO JOVE", "tipo": "TALLER", "n": 5}, {"nombre": "TALLER DE EXCEL", "tipo": "TALLER", "n": 4}, {"nombre": "PRESENTACIONES EFECTIVAS", "tipo": "TALLER", "n": 1}], "escuelas": ["ADMINISTRACION Y NEGOCIOS", "COMUNICACION", "DISENO", "INFORMATICA Y TELECOMUNICACIONES", "No Aplica", "SALUD"], "carreras": ["ACTUACION", "ADMINISTRACION DE RECURSOS HUMANOS", "ADMINISTRACION FINANCIERA", "ANALISTA PROGRAMADOR", "ANIMACION DIGITAL", "AUDITORIA", "COMERCIO EXTERIOR", "COMUNICACION AUDIOVISUAL", "CONTABILIDAD GENERAL C/E LEGISLACION TRIBUTARIA", "CONTABILIDAD GENERAL MENCION LEGISLACION TRIBUTARIA", "DISENO DE AMBIENTES", "DISENO DE VESTUARIO", "DISENO GRAFICO", "DISENO GRAFICO (SISTEMAS DE IDENTIDAD VISUAL)", "DISENO INDUSTRIAL", "DISENO INDUSTRIAL E INNOVACION EN PRODUCTOS", "FISIOTERAPIA", "ILUSTRACION PARA CONTEXTOS GLOBALES", "INGENIERIA EN ADMINISTRACION MENCION FINANZAS", "INGENIERIA EN ADMINISTRACION MENCION GESTION DE PERSONAS", "INGENIERIA EN ADMINISTRACION MENCION INNOVACION Y EMPRENDIMIENTO", "INGENIERIA EN COMERCIO EXTERIOR", "INGENIERIA EN GESTION LOGISTICA", "INGENIERIA EN INFORMATICA", "INGENIERIA EN MARKETING DIGITAL", "INGENIERIA EN REDES Y TELECOMUNICACIONES", "INGENIERIA EN SONIDO", "No Aplica", "PREPARADOR FISICO", "PUBLICIDAD PLAN COMUN", "TECNICO AUDIOVISUAL", "TECNICO DE ENFERMERIA", "TECNICO EN ADMINISTRACION", "TECNICO EN DISENO GRAFICO", "TECNICO EN GESTION LOGISTICA", "TECNOLOGIA EN SONIDO E ILUMINACION"]}, "__global__": {"total": 19961, "sedes": ["Alameda", "Antonio Varas", "Campus Arauco", "Campus Nacimiento", "Campus Villarrica", "Campus Virtual", "Casa Central", "Maip\u00fa", "Melipilla", "Padre Alonso De Ovalle", "Plaza Norte", "Plaza Oeste", "Plaza Vespucio", "Puente Alto", "Puerto Montt", "San Andr\u00e9s de Concepci\u00f3n", "San Bernardo", "San Carlos De Apoquindo", "San Joaqu\u00edn", "Valpara\u00edso", "Vi\u00f1a Del Mar"], "by_actividad": {"INDUCCION": 13459, "TALLER": 6039, "ASESORIA": 271, "CHARLA": 192}, "by_tipo_usuario": {"ESTUDIANTE": 19919, "DOCENTE": 42}, "monthly": {"Enero": {"total": 345, "by_actividad": {"TALLER": 315, "INDUCCION": 30}}, "Febrero": {"total": 9, "by_actividad": {"INDUCCION": 9}}, "Marzo": {"total": 9678, "by_actividad": {"INDUCCION": 8526, "TALLER": 991, "ASESORIA": 161}}, "Abril": {"total": 9929, "by_actividad": {"INDUCCION": 4894, "TALLER": 4733, "CHARLA": 192, "ASESORIA": 110}}}, "by_sede": {"Alameda": 619, "Antonio Varas": 2281, "Campus Arauco": 5, "Campus Nacimiento": 2, "Campus Villarrica": 6, "Campus Virtual": 28, "Casa Central": 2, "Maip\u00fa": 1131, "Melipilla": 720, "Padre Alonso De Ovalle": 1734, "Plaza Norte": 1419, "Plaza Oeste": 1448, "Plaza Vespucio": 305, "Puente Alto": 359, "Puerto Montt": 826, "San Andr\u00e9s de Concepci\u00f3n": 1842, "San Bernardo": 2458, "San Carlos De Apoquindo": 1625, "San Joaqu\u00edn": 1742, "Valpara\u00edso": 82, "Vi\u00f1a Del Mar": 1327}, "escuelas": ["ADMINISTRACION Y NEGOCIOS", "COMUNICACION", "CONSTRUCCION", "DISENO", "INFORMATICA Y TELECOMUNICACIONES", "INGENIERIA", "No Aplica", "RECURSOS NATURALES", "SALUD", "Sin Escuela", "TURISMO"], "carreras": []}};
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let currentSede = '__global__';
+let activeActs  = new Set(['all']);
+let filterEsc   = '';
+let filterCar   = '';
+let charts      = {};
+const MONTHS    = ['Enero','Febrero','Marzo','Abril'];
+const COLORS    = {
+  INDUCCION:'#F5A800', TALLER:'#1EBEC8', ASESORIA:'#27AE60', CHARLA:'#8E44AD'
+};
+const fmt = n => n == null ? '0' : n.toLocaleString('es-CL');
+const pct = (n,t) => t ? ((n/t)*100).toFixed(1)+'%' : '0%';
+
+// ── YEAR SWITCH ────────────────────────────────────────────────────────────────
+function selectYear(y) {
+  document.querySelectorAll('.year-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.year-btn').forEach(b=>{ if(b.textContent===y) b.classList.add('active'); });
+  document.getElementById('navYear').textContent = y;
+  document.getElementById('overlay2025').classList.toggle('active', y==='2025');
+  document.getElementById('content2026').style.display = y==='2026'?'block':'none';
+}
+
+// ── SEDE BAR ───────────────────────────────────────────────────────────────────
+function buildSedeBar() {
+  const bar = document.getElementById('sedeBar');
+  const sedes = DATA.__global__.sedes;
+  const allBtn = `<button class="sede-btn active" onclick="selectSede('__global__')" id="sede-__global__">Sistema Completo</button>`;
+  const sedeBtns = sedes.map(s =>
+    `<button class="sede-btn" onclick="selectSede('${s}')" id="sede-${s.replace(/[^a-zA-Z]/g,'_')}">${s}</button>`
+  ).join('');
+  bar.innerHTML = allBtn + sedeBtns;
+}
+
+function selectSede(sede) {
+  currentSede = sede;
+  document.querySelectorAll('.sede-btn').forEach(b=>b.classList.remove('active'));
+  const key = sede === '__global__' ? '__global__' : sede.replace(/[^a-zA-Z]/g,'_');
+  const btn = document.getElementById('sede-'+key);
+  if(btn) btn.classList.add('active');
+  // show/hide sede comparison section
+  document.getElementById('sedeCompSection').style.display = sede==='__global__' ? 'block' : 'none';
+  updateFilters();
+  render();
+}
+
+// ── FILTERS ────────────────────────────────────────────────────────────────────
+function updateFilters() {
+  const d = DATA[currentSede];
+  const selE = document.getElementById('selEscuela');
+  const selC = document.getElementById('selCarrera');
+  const escuelas = d.escuelas || [];
+  const carreras = d.carreras || [];
+  selE.innerHTML = '<option value="">Todas las escuelas</option>' +
+    escuelas.map(e=>`<option value="${e}">${e}</option>`).join('');
+  selC.innerHTML = '<option value="">Todas las carreras</option>' +
+    carreras.map(c=>`<option value="${c}">${c}</option>`).join('');
+  filterEsc = '';
+  filterCar = '';
+}
+
+function toggleAct(act) {
+  if(act==='all') {
+    activeActs = new Set(['all']);
+  } else {
+    activeActs.delete('all');
+    if(activeActs.has(act)) activeActs.delete(act);
+    else activeActs.add(act);
+    if(activeActs.size===0) activeActs.add('all');
+  }
+  document.querySelectorAll('.filter-chip').forEach(b=>{
+    const id = b.id.replace('chip-','');
+    b.classList.toggle('active', activeActs.has(id));
+  });
+  render();
+}
+
+function applyFilters() {
+  filterEsc = document.getElementById('selEscuela').value;
+  filterCar = document.getElementById('selCarrera').value;
+  render();
+}
+
+function resetFilters() {
+  activeActs = new Set(['all']);
+  filterEsc = '';
+  filterCar = '';
+  document.getElementById('selEscuela').value = '';
+  document.getElementById('selCarrera').value = '';
+  document.querySelectorAll('.filter-chip').forEach(b=>{
+    b.classList.toggle('active', b.id==='chip-all');
+  });
+  render();
+}
+
+// ── HELPERS ────────────────────────────────────────────────────────────────────
+function isActActive(act) { return activeActs.has('all') || activeActs.has(act); }
+
+function filterByAct(obj) {
+  if(activeActs.has('all')) return obj;
+  const res = {};
+  Object.keys(obj).filter(k=>activeActs.has(k)).forEach(k=>res[k]=obj[k]);
+  return res;
+}
+
+function totalFromActs(byAct) {
+  const filtered = filterByAct(byAct);
+  return Object.values(filtered).reduce((a,b)=>a+b,0);
+}
+
+function filterByEscuela(byEscuela) {
+  if(!filterEsc) return byEscuela;
+  const r = {};
+  if(byEscuela[filterEsc]) r[filterEsc] = byEscuela[filterEsc];
+  return r;
+}
+
+// ── DESTROY CHART ──────────────────────────────────────────────────────────────
+function destroyChart(id) {
+  if(charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────────
+function render() {
+  const d = DATA[currentSede];
+  if(!d) return;
+
+  // Compute filtered totals per actividad
+  const byAct = d.by_actividad || {};
+  const vals = {
+    INDUCCION: isActActive('INDUCCION') ? (byAct.INDUCCION||0) : 0,
+    TALLER:    isActActive('TALLER')    ? (byAct.TALLER||0)    : 0,
+    ASESORIA:  isActActive('ASESORIA')  ? (byAct.ASESORIA||0)  : 0,
+    CHARLA:    isActActive('CHARLA')    ? (byAct.CHARLA||0)    : 0,
+  };
+
+  // If escuela filter active, recalculate from by_escuela
+  let escuelaFiltered = filterByEscuela(d.by_escuela || {});
+  if(filterEsc || filterCar) {
+    // Recalc from escuela/carrera data
+    const filteredVals = {INDUCCION:0,TALLER:0,ASESORIA:0,CHARLA:0};
+    Object.values(escuelaFiltered).forEach(e=>{
+      Object.entries(e.by_act||{}).forEach(([act,n])=>{
+        if(isActActive(act) && filteredVals[act]!==undefined) filteredVals[act]+=n;
+      });
+    });
+    // carrera filter
+    if(filterCar) {
+      const cn = (d.by_carrera||{})[filterCar]||0;
+      const tot = Object.values(filteredVals).reduce((a,b)=>a+b,0);
+      // proportional approximation
+      Object.keys(filteredVals).forEach(k=>{
+        if(tot>0) filteredVals[k] = Math.round(filteredVals[k]*(cn/tot));
+      });
+    }
+    Object.assign(vals, filteredVals);
+  }
+
+  const total = Object.values(vals).reduce((a,b)=>a+b,0);
+
+  // ── KPIs ──
+  document.getElementById('kpi-ind').textContent  = fmt(vals.INDUCCION);
+  document.getElementById('kpi-tall').textContent = fmt(vals.TALLER);
+  document.getElementById('kpi-ases').textContent = fmt(vals.ASESORIA);
+  document.getElementById('kpi-char').textContent = fmt(vals.CHARLA);
+  document.getElementById('kpi-ind-pct').textContent  = total ? pct(vals.INDUCCION,total)+' del total' : '';
+  document.getElementById('kpi-tall-pct').textContent = total ? pct(vals.TALLER,total)+' del total' : '';
+  document.getElementById('kpi-ases-pct').textContent = total ? pct(vals.ASESORIA,total)+' del total' : '';
+  document.getElementById('kpi-char-pct').textContent = total ? pct(vals.CHARLA,total)+' del total' : '';
+  document.getElementById('kpi-ind-sub').textContent  = 'participantes';
+  document.getElementById('kpi-tall-sub').textContent = 'participantes';
+  document.getElementById('kpi-ases-sub').textContent = 'participantes';
+  document.getElementById('kpi-char-sub').textContent = 'participantes';
+
+  // ── TIPO USUARIO ──
+  const tu = d.by_tipo_usuario || {};
+  document.getElementById('tipo-est').textContent = fmt(tu.ESTUDIANTE||0);
+  document.getElementById('tipo-doc').textContent = fmt(tu.DOCENTE||0);
+
+  // ── MONTHLY ──
+  renderMonthly(d);
+
+  // ── LINE CHART ──
+  renderLine(d, vals);
+
+  // ── DONA ──
+  renderDona(vals, total);
+
+  // ── ESCUELA BAR ──
+  renderEscuelaBar(d, escuelaFiltered);
+
+  // ── CARRERA LIST ──
+  renderCarrera(d);
+
+  // ── SEDE CHART (global only) ──
+  if(currentSede==='__global__') renderSedeChart();
+
+  // ── TABLE ──
+  renderTable(d, total);
+}
+
+function renderMonthly(d) {
+  const mg = document.getElementById('monthGrid');
+  const chipColors = {INDUCCION:'var(--ind-color)',TALLER:'var(--tall-color)',ASESORIA:'var(--ases-color)',CHARLA:'var(--char-color)'};
+  mg.innerHTML = MONTHS.map(m=>{
+    const md = d.monthly[m]||{total:0,by_actividad:{}};
+    const byA = md.by_actividad||{};
+    const filtTotal = Object.entries(byA)
+      .filter(([k])=>isActActive(k))
+      .reduce((a,[,v])=>a+v,0);
+    const chips = Object.entries(byA)
+      .filter(([k,v])=>v>0&&isActActive(k))
+      .map(([k,v])=>`<span class="m-chip" style="background:${chipColors[k]}22;color:${chipColors[k]}">${k} ${fmt(v)}</span>`)
+      .join('');
+    return `<div class="month-card">
+      <div class="month-name">${m} 2026</div>
+      <div class="month-total">${fmt(filtTotal)}</div>
+      <div class="month-chips">${chips||'<span style="font-size:10px;color:#333">Sin actividad</span>'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderLine(d, vals) {
+  destroyChart('line');
+  const ctx = document.getElementById('chartLine').getContext('2d');
+  const acts = ['INDUCCION','TALLER','ASESORIA','CHARLA'].filter(a=>isActActive(a));
+  const datasets = acts.map(act=>({
+    label: act.charAt(0)+act.slice(1).toLowerCase(),
+    data: MONTHS.map(m=>(d.monthly[m]?.by_actividad?.[act])||0),
+    borderColor: COLORS[act],
+    backgroundColor: COLORS[act]+'22',
+    fill: true, tension: 0.4, pointRadius: 4,
+    pointBackgroundColor: COLORS[act], pointBorderColor:'#111',
+    pointBorderWidth:1.5, borderWidth:2.5
+  }));
+  charts.line = new Chart(ctx,{
+    type:'line',
+    data:{ labels:MONTHS, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:true, position:'top', labels:{ color:'#888', font:{size:10,family:'Barlow'}, usePointStyle:true, boxWidth:7, padding:12 }}},
+      scales:{
+        x:{ grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#666',font:{size:10}} },
+        y:{ grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#666',font:{size:10}}, border:{display:false} }
+      }
+    }
+  });
+}
+
+function renderDona(vals, total) {
+  destroyChart('dona');
+  const acts = Object.entries(vals).filter(([,v])=>v>0);
+  const ctx = document.getElementById('chartDona').getContext('2d');
+  charts.dona = new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels: acts.map(([k])=>k.charAt(0)+k.slice(1).toLowerCase()),
+      datasets:[{
+        data: acts.map(([,v])=>v),
+        backgroundColor: acts.map(([k])=>COLORS[k]),
+        borderColor:'#1e1e1e', borderWidth:3, hoverOffset:6
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      cutout:'68%',
+      plugins:{
+        legend:{ display:true, position:'right', labels:{ color:'#888', font:{size:10,family:'Barlow'}, usePointStyle:true, boxWidth:7, padding:10 }},
+        tooltip:{ callbacks:{ label: ctx => ` ${ctx.label}: ${fmt(ctx.raw)} (${pct(ctx.raw,total)})` }}
+      }
+    }
+  });
+}
+
+function renderEscuelaBar(d, escuelaFiltered) {
+  destroyChart('escuela');
+  const escData = filterEsc ? escuelaFiltered : (d.by_escuela||{});
+  const entries = Object.entries(escData)
+    .map(([name,info])=>{
+      const n = Object.entries(info.by_act||{}).filter(([k])=>isActActive(k)).reduce((a,[,v])=>a+v,0);
+      return [name,n];
+    })
+    .filter(([,n])=>n>0)
+    .sort((a,b)=>b[1]-a[1]);
+
+  const ctx = document.getElementById('chartEscuela').getContext('2d');
+  const acts = ['INDUCCION','TALLER','ASESORIA','CHARLA'].filter(a=>isActActive(a));
+  const isStacked = acts.length > 1;
+
+  if(isStacked) {
+    charts.escuela = new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels: entries.map(([k])=>k.length>22?k.slice(0,22)+'…':k),
+        datasets: acts.map(act=>({
+          label: act.charAt(0)+act.slice(1).toLowerCase(),
+          data: entries.map(([name])=>(escData[name]?.by_act?.[act])||0),
+          backgroundColor: COLORS[act]+'cc',
+          borderRadius:2
+        }))
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ display:true, position:'top', labels:{ color:'#888', font:{size:10,family:'Barlow'}, usePointStyle:true, boxWidth:7 }}},
+        scales:{
+          x:{ stacked:true, grid:{display:false}, ticks:{color:'#555',font:{size:9}} },
+          y:{ stacked:true, grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#666',font:{size:10}}, border:{display:false} }
+        }
+      }
+    });
+  } else {
+    charts.escuela = new Chart(ctx,{
+      type:'bar',
+      data:{
+        labels: entries.map(([k])=>k.length>22?k.slice(0,22)+'…':k),
+        datasets:[{ data:entries.map(([,v])=>v), backgroundColor:entries.map((_,i)=>Object.values(COLORS)[i%4]+'cc'), borderRadius:2 }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false, indexAxis:'y',
+        plugins:{ legend:{display:false} },
+        scales:{
+          x:{ grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#666',font:{size:10}}, border:{display:false} },
+          y:{ grid:{display:false}, ticks:{color:'#666',font:{size:10}} }
+        }
+      }
+    });
+  }
+}
+
+function renderCarrera(d) {
+  const bc = document.getElementById('barCarrera');
+  let byC = d.by_carrera || {};
+  if(filterCar) {
+    const v = byC[filterCar]||0;
+    byC = v ? {[filterCar]:v} : {};
+  }
+  if(filterEsc) {
+    // filter carreras by escuela (approximation using by_escuela)
+    const escInfo = (d.by_escuela||{})[filterEsc];
+    if(escInfo) {
+      const escTotal = escInfo.total;
+      const ratio = escTotal / (d.total||1);
+      const filtered = {};
+      Object.entries(byC).forEach(([k,v])=>{ filtered[k]=Math.round(v*ratio); });
+      byC = filtered;
+    }
+  }
+  const entries = Object.entries(byC).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const max = entries[0]?.[1]||1;
+  const palette = ['#F5A800','#1EBEC8','#27AE60','#8E44AD','#E67E22','#2E86C1','#E74C3C','#1ABC9C','#9B59B6','#F39C12'];
+  bc.innerHTML = entries.map(([k,v],i)=>`
+    <div class="bar-item">
+      <span class="bar-lbl short" title="${k}">${k.length>22?k.slice(0,22)+'…':k}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/max*100).toFixed(1)}%;background:${palette[i%10]}"></div></div>
+      <span class="bar-val">${fmt(v)}</span>
+    </div>`).join('')||'<div class="no-data">Sin datos</div>';
+}
+
+function renderSedeChart() {
+  destroyChart('sede');
+  const ctx = document.getElementById('chartSede').getContext('2d');
+  const byS = DATA.__global__.by_sede;
+  const entries = Object.entries(byS).sort((a,b)=>b[1]-a[1]);
+  charts.sede = new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels: entries.map(([k])=>k),
+      datasets:[{
+        data: entries.map(([,v])=>v),
+        backgroundColor: entries.map((_,i)=>{
+          const palette=['#F5A800cc','#1EBEC8cc','#27AE60cc','#8E44ADcc','#E67E22cc','#2E86C1cc','#E74C3Ccc','#1ABC9Ccc','#9B59B6cc','#F39C12cc'];
+          return palette[i%palette.length];
+        }),
+        borderRadius:3
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx=>' '+fmt(ctx.raw)+' participantes' }}},
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:'#555',font:{size:9},maxRotation:45} },
+        y:{ grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#666',font:{size:10}}, border:{display:false} }
+      }
+    }
+  });
+}
+
+function renderTable(d, total) {
+  const tb = document.getElementById('actTableBody');
+  let rows = d.by_nombre || [];
+
+  // filter by actividad
+  if(!activeActs.has('all')) {
+    rows = rows.filter(r=>activeActs.has(r.tipo));
+  }
+  // filter by escuela (approximate: show all if no filter)
+  document.getElementById('actTableSub').textContent =
+    currentSede==='__global__' ? 'Todas las sedes · Ene–Abr 2026' :
+    `${currentSede} · Ene–Abr 2026`;
+
+  const grandTotal = rows.reduce((a,r)=>a+r.n,0)||total||1;
+  tb.innerHTML = rows.map(r=>`
+    <tr>
+      <td style="font-weight:600;color:#ddd">${r.nombre}</td>
+      <td><span class="act-badge badge-${r.tipo}">${r.tipo}</span></td>
+      <td style="text-align:right;font-weight:700;color:${COLORS[r.tipo]||'#aaa'}">${fmt(r.n)}</td>
+      <td style="text-align:right;color:#555">${pct(r.n,grandTotal)}</td>
+    </tr>`).join('')||'<tr><td colspan="4" class="empty">Sin datos para los filtros seleccionados</td></tr>';
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+buildSedeBar();
+updateFilters();
+render();
+</script>
+</body>
+</html>
